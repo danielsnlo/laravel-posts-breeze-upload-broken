@@ -10,7 +10,9 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="text-gray-900 dark:text-gray-100">
                     <div class="post-form">
-                        <form action="{{ route('posts.store') }}" method="post">
+                   {{-- <form action="{{ route('posts.store') }}" method="post"> --}}
+                        <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
+
                             @csrf
 
                             <div class="mb-4">
