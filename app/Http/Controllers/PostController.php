@@ -37,6 +37,9 @@ class PostController extends Controller
         ]);
 
         $post = new Post();
+        $post->title = 'New Post';
+        $post->content = 'This is a post content.';
+        $post->user_id = 1; // Assigning to user with ID 1
         $post->title = $request->title;
         $post->content = $request->content;
 
