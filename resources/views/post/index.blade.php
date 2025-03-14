@@ -27,7 +27,7 @@
                                     </button>
                                 </form>
                             </li>
-                        @endforeach
+                            @endforeach
                         </ul>
                     </div>
                 </div>
