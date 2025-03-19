@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -28,7 +30,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Post $post)
     {
         $request->validate([
             'title' => 'required|string|max:255',
@@ -36,19 +38,31 @@ class PostController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        $validated = $request->validate([
+            'content' => 'required|string|nax:500',
+        ]);
+
         $post = new Post();
-        $post->user_id = auth()->id();
+        $post->user = Auth::id();
         $post->title = $request->title;
         $post->content = $request->content;
+
+        $post->comments()->create([
+            'content' => $validated['content'],
+        ]);
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('images', 'public');
             $post->image_path = $path;
         }
 
+        return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
+
         $post->save();
 
         return redirect()->route('posts.index')->with('success', 'Post created successfully.');
+
+        return redirect()->back();
     }
 
     /**
@@ -56,7 +70,8 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        $comments = $post->comments()->latest()->get(); // This gets comments for post
+        return view('posts.show', compact('post', 'comments'));
     }
 
     /**
